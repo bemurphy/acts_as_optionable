@@ -7,6 +7,7 @@ begin
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = "acts-as-optionable"
     gemspec.summary = "ActsAsOptionable is a plugin for Rails that support adding options, as well as specify default options, to ActiveRecord models."
+    gemspec.description = "Add options to ActiveRecord models.  I don't advise using this yet, as it's very alpha."
     gemspec.email = "xternal1+aao@gmail.com"
     gemspec.homepage = "http://github.com/bemurphy/acts_as_optionable"
     gemspec.authors = ["Brendon Murphy"]
