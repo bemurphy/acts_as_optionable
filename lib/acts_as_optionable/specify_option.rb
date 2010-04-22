@@ -24,7 +24,6 @@ module ActiveRecord
           end
 
           def instance_specified_options=(opts)
-            opts.symbolize_keys!
             @instance_specified_options = {}
             opts.each do |option_name, attributes|
               attributes.symbolize_keys!

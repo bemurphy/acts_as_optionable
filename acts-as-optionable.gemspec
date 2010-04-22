@@ -29,11 +29,10 @@ Gem::Specification.new do |s|
      "spec/acts_as_optionable_spec.rb",
      "spec/spec_helper.rb"
   ]
-  s.has_rdoc = true
   s.homepage = %q{http://github.com/bemurphy/acts_as_optionable}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.2}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{ActsAsOptionable is a plugin for Rails that support adding options, as well as specify default options, to ActiveRecord models.}
   s.test_files = [
     "spec/acts_as_optionable_spec.rb",
