@@ -82,6 +82,10 @@ describe "ActsAsOptionable" do
       Foobar.optionable_specified_options.should_not have_key("foo")
       Foobar.optionable_specified_options.should_not have_key("bar")
     end
+    
+    it "should return readonly records for the default options" do
+      @optionable.get_option(:foo).should be_readonly
+    end
   end
   
   describe "specifying options at the instance level" do
@@ -99,6 +103,11 @@ describe "ActsAsOptionable" do
       @optionable.instance_specified_options = @options_template
       @optionable.get_option(:fizz).value.should == "FIZZFIZZ"
       @optionable.get_option(:buzz).value.should == "BUZZBUZZ"
+    end
+    
+    it "should return readonly records for the default options" do
+      @optionable.instance_specified_options = @options_template
+      @optionable.get_option(:fizz).should be_readonly
     end
   end
 

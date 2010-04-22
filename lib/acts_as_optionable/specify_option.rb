@@ -4,7 +4,7 @@ module ActiveRecord
       module SpecifyOption
         module ClassMethods
           def specify_option(option_name, opts = {})
-            optionable_specified_options[option_name.to_s] = Option.new(:name => option_name.to_s, :default => opts[:default])
+            optionable_specified_options[option_name.to_s] = Option.new_readonly(:name => option_name.to_s, :default => opts[:default])
           end
           
           def optionable_specified_options
@@ -13,8 +13,7 @@ module ActiveRecord
 
           def get_specified_option(option_name)
             optionable_specified_options[option_name.to_s]
-          end
-
+          end          
         end
 
         module InstanceMethods
@@ -29,8 +28,7 @@ module ActiveRecord
             @instance_specified_options = {}
             opts.each do |option_name, attributes|
               attributes.symbolize_keys!
-              @instance_specified_options[option_name.to_s] = Option.new(:name => option_name.to_s, 
-              :default => attributes[:default])
+              @instance_specified_options[option_name.to_s] = Option.new_readonly(:name => option_name, :default => attributes[:default])
             end
           end
         end

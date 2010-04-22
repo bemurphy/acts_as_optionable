@@ -10,6 +10,12 @@ class Option < ActiveRecord::Base
   validates_presence_of [:optionable_type, :optionable_id]
   
   attr_accessor :default
+  
+  def self.new_readonly(attrs)
+    option = new(:name => attrs[:name].to_s, :default => attrs[:default])
+    option.readonly!
+    option
+  end
 
   def value
     val = read_attribute(:value)
