@@ -63,7 +63,7 @@ describe "ActsAsOptionable" do
   
   describe "specifying options at class level" do
     it "should have the proper number of options set" do
-      @optionable.get_default_options.length.should == 2
+      @optionable.options_and_defaults.keys.length.should == 2
     end
     
     it "should have the expected options set" do
@@ -227,6 +227,27 @@ describe "ActsAsOptionable" do
         @optionable.delete_option("fizz")
         @optionable.get_option("fizz").value.should == "FIZZFIZZ"
       end
+    end
+  end
+  
+  describe "fetching an object with option names and values" do
+    it "should have a method to fetch option names and values" do
+      lambda { @optionable.options_values_struct }.should_not raise_error(NoMethodError)
+    end
+    
+    it "should return an object that lets us retreive values by calling a method named for the option" do
+      option_values = @optionable.options_values_struct
+      option_values.foo.should == "FOOFOO"
+      option_values.bar.should == "BARBAR"
+    end
+    
+    it "should contain both set and default options" do
+      @optionable.instance_specified_options = @options_template
+      @optionable.set_option("example_option", 99)
+      option_values = @optionable.options_values_struct
+      option_values.foo.should == "FOOFOO"
+      option_values.fizz.should == "FIZZFIZZ"
+      option_values.example_option.should == 99
     end
   end
 end

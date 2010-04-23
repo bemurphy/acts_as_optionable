@@ -15,6 +15,7 @@ module ActiveRecord
       end
     
       module IntanceMethods
+        # Store an option persistently and override default option
         def set_option(name, value)
           option = get_stored_option(name) || options.build(:name => name.to_s)
           return if new_option_matches_current?(option)
@@ -24,19 +25,13 @@ module ActiveRecord
           ret
         end
         
+        # Get a stored option, or fall back to a default option
         def get_option(name)
           get_stored_option(name) ||
           get_default_option(name)
-        end
+        end        
         
-        def get_default_option(name)
-          instance_specified_option(name) || self.class.get_specified_option(name)
-        end
-        
-        def get_default_options
-          self.class.optionable_specified_options.merge(instance_specified_options || {})
-        end
-        
+        # Delete a stored option.
         def delete_option(name)
           if option = options(:reload).find_by_name(name.to_s)
             option = option.destroy
@@ -46,25 +41,52 @@ module ActiveRecord
         end
         
         def options_and_defaults
-          options_as_hash = options.inject({}) do |memo, option|
-            memo[option.name.to_s] = option
-            memo
-          end
           get_default_options.merge(options_as_hash)
         end
-      
-        def specified_options
-          raise "TODO"
-        end
         
+        # Returns an instance of options where option names are callable as methods
+        #
+        # Example:
+        #   # Where foo is 'FOO' & bar is 'BAR'
+        #   options = foo.options_values_struct 
+        #   options.foo => "FOO"
+        #   options.bar => "BAR"
+        def options_values_struct
+          options = {}
+          options_and_defaults.each do |name, option|
+            options[name.to_s] = option.value
+          end        
+          OpenStruct.new(options)
+        end
+                
         protected
         
+        # Gets the default option if set.  Prefers instance default over class default.
+        def get_default_option(name)
+          instance_specified_option(name) || self.class.get_specified_option(name)
+        end
+        
+        # Get a hash of all default options, with option names as keys.
+        def get_default_options
+          self.class.optionable_specified_options.merge(instance_specified_options || {})
+        end
+        
+        # Find the stored option in the database
         def get_stored_option(name)
           options.detect { |option| option.name.to_s == name.to_s }
         end
         
+        # Check if a new value provided is the same as the default option.
         def new_option_matches_current?(option)
           (!option.new_record? && option.value == value) || (get_default_option(name).value == value rescue nil)
+        end
+        
+        # Return the stored options as a hash, with the option names as keys.
+        def options_as_hash
+          options.inject({}) do |memo, option|
+            memo[option.name.to_s] = option
+            memo
+          end
         end
       end
     end
