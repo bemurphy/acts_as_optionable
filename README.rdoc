@@ -110,7 +110,6 @@ This is useful, for instance, for passing a set of options into a liquid templat
 * Thinking about finding a way to optionally associate the option with an asset table.  This would be useful for allowing user defined stylesheet options referencing S3 assets.
 * Add in a way to return an option value straight away.
 * Assign multiple settings at a time.
-
-
+* Add a type or hint storage on options (i.e. this option is for a color)
 
 Copyright (c) 2010 Brendon Murphy, released under the MIT license
