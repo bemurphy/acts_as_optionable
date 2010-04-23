@@ -1,0 +1,116 @@
+= ActsAsOptionable
+
+*Warning* I don't recommend using this yet since I'm going to make a couple core changes shortly.  Very alpha.
+
+Support to add options, as well as specify default options, to ActiveRecord models.  It's currently a very basic approach, and allows you to fetch options from an ActiveRecord model via an association, or via a hash or object where options are callable as methods.  It doesn't support any advanced finder options.
+
+It works by creating an options table which is polymorphic to ActiveRecord models which call acts_as_optionable.
+
+The plugin also grants the ability to specify default options for a class, or pass in defaults to an instance at runtime.
+
+== Installation
+
+Available as a gem:
+
+  gem install acts-as-optionable
+
+=== Post Installation
+
+This creates an Option model in you app.
+
+1. script/generate option
+2. Rake db:migrate
+
+== Usage
+
+=== Adding options to a model
+
+  class Style < ActiveRecord::Base
+    acts_as_optionable
+  end
+  
+=== Setting, getting, and deleting options
+
+Use #get_option, #set_option, and #delete_option for interacting with options.
+
+  style = Style.create
+  style.set_option("color", "red")
+  style.get_option("color").value => "red"
+  style.delete_option("color")
+  style.get_option("color") => nil
+
+
+=== Specifying default options at the class level
+
+  class StyleWithDefaults < ActiveRecord::Base
+    acts_as_optionable
+  
+    specify_option :background_color, :default => "white"
+    specify_option :color, :default => "black"
+  end
+  
+  style = StyleWithDefaults.create
+  style.get_option("background_color").value => "white"
+  
+=== Specifying instance options at runtime
+
+  style.instance_specified_options = { :foo => {:default => "FOO"} }
+  style.get_option("foo").value => "FOO"
+
+=== Persisting options specific to a record
+
+You can persist numeric, boolean, or string values for storage.
+
+  style.set_option("color", "red")
+  style.get_option("color").value => "red"
+  
+  style.set_option("active", false)
+  style.get_option("active").value => false
+  
+  style.set_option("max_time", 3600)
+  style.get_option("max_time").value => 3600 
+
+=== Option precedence
+
+Options are preferred in the following order:
+
+1. Stored options specific for this record
+2. Runtime options provided to the instance
+3. Class options specified at load time.
+
+Example:
+
+  class StyleWithDefaults < ActiveRecord::Base
+    acts_as_optionable
+
+    specify_option :background_color, :default => "white"
+    specify_option :color, :default => "black"
+  end
+  
+  style = StyleWithDefaults.create
+  style.instance_specified_options = { :color => { :default => "green" } }
+  style.get_option("background_color").value => "white"
+  style.get_option("color").value => "green"
+  style.set_option("color", "blue")
+  style.get_option("color").value => "blue"
+  
+
+=== Easy options and values retrieval
+
+Use #options_values_struct to grab a struct to allow for method based calls for all default and set options:
+
+  style.StyleWithDefaults.create
+  options = style.options_values_struct
+  options.color => "black"
+  
+This is useful, for instance, for passing a set of options into a liquid template.
+
+== TODO
+
+* Thinking about finding a way to optionally associate the option with an asset table.  This would be useful for allowing user defined stylesheet options referencing S3 assets.
+* Add in a way to return an option value straight away.
+
+
+
+
+Copyright (c) 2010 Brendon Murphy, released under the MIT license
