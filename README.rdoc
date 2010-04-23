@@ -99,7 +99,7 @@ Example:
 
 Use #options_values_struct to grab a struct to allow for method based calls for all default and set options:
 
-  style.StyleWithDefaults.create
+  style = StyleWithDefaults.create
   options = style.options_values_struct
   options.color => "black"
   
@@ -109,7 +109,7 @@ This is useful, for instance, for passing a set of options into a liquid templat
 
 * Thinking about finding a way to optionally associate the option with an asset table.  This would be useful for allowing user defined stylesheet options referencing S3 assets.
 * Add in a way to return an option value straight away.
-
+* Assign multiple settings at a time.
 
 
 
