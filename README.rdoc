@@ -38,19 +38,24 @@ Use #get_option, #set_option, and #delete_option for interacting with options.
   style.get_option("color").value => "red"
   style.delete_option("color")
   style.get_option("color") => nil
+  
+You can also store an optional "kind" attribute as a hint to what you are storing:
 
+  style.set_option("bgcolor", "white", "color")
+  style.get_option("bgcolor").kind => "color"
 
 === Specifying default options at the class level
 
   class StyleWithDefaults < ActiveRecord::Base
     acts_as_optionable
   
-    specify_option :background_color, :default => "white"
+    specify_option :background_color, :default => "white", :kind => "color"
     specify_option :color, :default => "black"
   end
   
   style = StyleWithDefaults.create
   style.get_option("background_color").value => "white"
+  style.get_option("background_color").kind => "color"
   
 === Specifying instance options at runtime
 
