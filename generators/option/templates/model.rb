@@ -12,7 +12,7 @@ class Option < ActiveRecord::Base
   attr_accessor :default
   
   def self.new_readonly(attrs)
-    option = new(:name => attrs[:name].to_s, :default => attrs[:default])
+    option = new(attrs)
     option.readonly!
     option
   end

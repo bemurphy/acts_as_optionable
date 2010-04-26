@@ -9,7 +9,7 @@ class SpecifiedMixin < Mixin
   acts_as_optionable
   
   specify_option :foo, :default => "FOOFOO"
-  specify_option :bar, :default => "BARBAR"
+  specify_option :bar, :default => "BARBAR", :kind => "example"
 end
 
 class NoSpecifiedMixin < Mixin
@@ -23,16 +23,16 @@ def setup_db
   ActiveRecord::Base.logger
   ActiveRecord::Schema.define do
     create_table :mixins do |t|
-      t.string :value
+      t.string :stuff
     end
     
     create_table :options do |t|
       t.string :name
       t.string :value
+      t.string :kind
       t.references :optionable, :polymorphic => true
       t.timestamps
     end
-    
   end  
 end
 
@@ -70,6 +70,15 @@ describe "ActsAsOptionable" do
       @optionable.get_option(:foo).value.should == "FOOFOO"
       @optionable.get_option(:bar).value.should == "BARBAR"
     end
+
+    it "should not have a kind if none was specified" do
+      @optionable.get_option(:foo).kind.should be_blank
+    end
+    
+    it "should be able to specify the kind of option" do
+      @optionable.get_option(:bar).kind.should == "example"
+    end
+    
     
     it "should not mix specifications across unrelated classes" do
       class Foobar < Mixin
@@ -103,6 +112,16 @@ describe "ActsAsOptionable" do
       @optionable.instance_specified_options = @options_template
       @optionable.get_option(:fizz).value.should == "FIZZFIZZ"
       @optionable.get_option(:buzz).value.should == "BUZZBUZZ"
+    end
+    
+    it "should have the kind if set" do
+      @optionable.instance_specified_options = @options_template.merge(:kind_is_set => {:default => "kind_is_set", :kind => "example_kind" })
+      @optionable.get_option(:kind_is_set).kind.should == "example_kind"
+    end
+    
+    it "should not have the kind if none was provided" do
+      @optionable.instance_specified_options = @options_template
+      @optionable.get_option(:fizz).kind.should be_blank
     end
     
     it "should return readonly records for the default options" do
@@ -175,6 +194,26 @@ describe "ActsAsOptionable" do
         @optionable.set_option(@key, false)
         @optionable.get_option(@key).value.should be_false
       end
+      
+      it "should allowing storing the option kind" do
+        @optionable.set_option(@key, "red", "color")
+        @optionable.get_option(@key).kind.should == "color"
+      end
+      
+      it "should not update the option if it already matches current" do
+        @optionable.set_option(@key, "red", "color")
+        timestamp = @optionable.get_option(@key).updated_at.dup
+        sleep 1 # not worth a dependency for 1 time check
+        @optionable.set_option(@key, "red", "color")
+        @optionable.get_option(@key).updated_at.should == timestamp
+      end
+      
+      it "should not set the option if it matches default" do
+        @optionable.get_option(:foo).value.should == "FOOFOO"
+        lambda {
+          @optionable.set_option(:foo, "FOOFOO") 
+        }.should_not change { Option.count }
+      end
     end
     
     describe "getting options" do
@@ -239,6 +278,12 @@ describe "ActsAsOptionable" do
       option_values = @optionable.options_values_struct
       option_values.foo.should == "FOOFOO"
       option_values.bar.should == "BARBAR"
+    end
+    
+    it "should have option_name_kind methods set" do
+      option_values = @optionable.options_values_struct
+      option_values.foo_kind.should be_blank
+      option_values.bar_kind.should == "example"
     end
     
     it "should contain both set and default options" do
