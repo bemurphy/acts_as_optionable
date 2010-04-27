@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brendon Murphy"]
-  s.date = %q{2010-04-26}
+  s.date = %q{2010-04-27}
   s.description = %q{Add options to ActiveRecord models.  I don't advise using this yet, as it's very alpha.}
   s.email = %q{xternal1+aao@gmail.com}
   s.extra_rdoc_files = [
@@ -20,6 +20,9 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "generators/option/option_generator.rb",
+     "generators/option/templates/create_options.rb",
+     "generators/option/templates/option.rb",
      "lib/acts-as-optionable.rb",
      "lib/acts_as_optionable/acts_as_optionable.rb",
      "lib/acts_as_optionable/option_methods.rb",

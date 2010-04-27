@@ -11,7 +11,7 @@ begin
     gemspec.email = "xternal1+aao@gmail.com"
     gemspec.homepage = "http://github.com/bemurphy/acts_as_optionable"
     gemspec.authors = ["Brendon Murphy"]
-    gemspec.files =  FileList["[A-Z]*", "{lib,spec,rails}/**/*"] - FileList["**/*.log"]
+    gemspec.files =  FileList["[A-Z]*", "{lib,spec,rails,generators}/**/*"] - FileList["**/*.log"]
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
