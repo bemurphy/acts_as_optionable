@@ -40,8 +40,23 @@ module ActiveRecord
           end
         end
         
+        # Return a hash of options and defaults.  Values in hash are Option instances
         def options_and_defaults
           get_default_options.merge(options_as_hash)
+        end
+        
+        # Return a pure hash filled from the options.  Use this if you want access to the data
+        # as a hash without interfacing with Option methods
+        def options_and_defaults_hash
+          options = {}
+          options_and_defaults.each do |name, option| 
+            key = name.to_s
+            options[key] = {}
+            options[key]["value"] = option.value
+            options[key]["default"] = option.default if option.default
+            options[key]["kind"] = option.kind if option.kind
+          end
+          options
         end
         
         # Returns an instance of options where option names are callable as methods

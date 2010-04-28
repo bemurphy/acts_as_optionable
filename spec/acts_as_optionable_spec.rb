@@ -295,4 +295,29 @@ describe "ActsAsOptionable" do
       option_values.example_option.should == 99
     end
   end
+  
+  describe "getting options and defaults as a hash" do
+    before(:each) do
+      @optionable.set_option("example_option", "example_value")
+      @options_and_defaults_hash = @optionable.options_and_defaults_hash
+    end
+    
+    it "should return a hash" do
+      @options_and_defaults_hash.should be_kind_of(Hash)
+    end
+
+    it "should have a value set for default options" do
+      @options_and_defaults_hash["foo"]["value"].should == "FOOFOO"
+      @options_and_defaults_hash["bar"]["value"].should == "BARBAR"
+    end
+    
+    it "should return non-default options as well" do
+      @options_and_defaults_hash["example_option"]["value"].should == "example_value"
+    end
+    
+    it "should include the kind and default" do
+      @options_and_defaults_hash["bar"]["default"].should == "BARBAR"
+      @options_and_defaults_hash["bar"]["kind"].should == "example"
+    end
+  end
 end
