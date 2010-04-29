@@ -50,15 +50,11 @@ module ActiveRecord
         def options_and_defaults_hash
           options = {}
           options_and_defaults.each do |name, option| 
-            key = name.to_s
-            options[key] = {}
-            options[key]["value"] = option.value
-            options[key]["default"] = option.default if option.default
-            options[key]["kind"] = option.kind if option.kind
+            options[name.to_s] = option_to_hash(option)
           end
           options
         end
-        
+                
         # Returns an instance of options where option names are callable as methods
         #
         # Example:
@@ -69,8 +65,9 @@ module ActiveRecord
         def options_values_struct
           options = {}
           options_and_defaults.each do |name, option|
-            options[name.to_s] = option.value
-            options["#{name.to_s}_kind"] = option.kind
+            opt_key = name.to_s
+            options[opt_key] = option.value
+            options["#{opt_key}_kind"] = option.kind
           end        
           OpenStruct.new(options)
         end
@@ -104,6 +101,15 @@ module ActiveRecord
             memo[option.name.to_s] = option
             memo
           end
+        end
+        
+        # Translate the interesting data from an option into a hash
+        def option_to_hash(option)
+          option_hash = {}
+          option_hash["value"] = option.value
+          option_hash["default"] = option.default if option.default
+          option_hash["kind"] = option.kind if option.kind
+          option_hash
         end
       end
     end
