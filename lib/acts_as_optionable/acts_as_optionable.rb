@@ -48,11 +48,10 @@ module ActiveRecord
         # Return a pure hash filled from the options.  Use this if you want access to the data
         # as a hash without interfacing with Option methods
         def options_and_defaults_hash
-          options = {}
-          options_and_defaults.each do |name, option| 
-            options[name.to_s] = option_to_hash(option)
+          options_and_defaults.inject({}) do |memo, option|
+            memo[option[0]] = option[1].to_h 
+            memo
           end
-          options
         end
                 
         # Returns an instance of options where option names are callable as methods
@@ -101,15 +100,6 @@ module ActiveRecord
             memo[option.name.to_s] = option
             memo
           end
-        end
-        
-        # Translate the interesting data from an option into a hash
-        def option_to_hash(option)
-          option_hash = {}
-          option_hash["value"] = option.value
-          option_hash["default"] = option.default if option.default
-          option_hash["kind"] = option.kind if option.kind
-          option_hash
         end
       end
     end

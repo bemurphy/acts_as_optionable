@@ -40,6 +40,14 @@ class Option < ActiveRecord::Base
     name.humanize.titleize
   end
   
+  def to_h
+    option_hash = {}
+    option_hash["value"] = value
+    option_hash["default"] = default if default
+    option_hash["kind"] = kind if kind
+    option_hash.dup
+  end
+  
   # def default_value
   #   @config['default']
   # end
