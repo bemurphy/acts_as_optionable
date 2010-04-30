@@ -9,7 +9,7 @@ class SpecifiedMixin < Mixin
   acts_as_optionable
   
   specify_option :foo, :default => "FOOFOO"
-  specify_option :bar, :default => "BARBAR", :kind => "example"
+  specify_option :bar, :default => "BARBAR", :kind => "example", :display_name => "Bar Bar"
 end
 
 class NoSpecifiedMixin < Mixin
@@ -28,6 +28,7 @@ def setup_db
     
     create_table :options do |t|
       t.string :name
+      t.string :display_name
       t.string :value
       t.string :kind
       t.references :optionable, :polymorphic => true
@@ -79,6 +80,9 @@ describe "ActsAsOptionable" do
       @optionable.get_option(:bar).kind.should == "example"
     end
     
+    it "should be able to specify a display name" do
+      @optionable.get_option(:bar).display_name.should == "Bar Bar"
+    end
     
     it "should not mix specifications across unrelated classes" do
       class Foobar < Mixin
@@ -117,6 +121,11 @@ describe "ActsAsOptionable" do
     it "should have the kind if set" do
       @optionable.instance_specified_options = @options_template.merge(:kind_is_set => {:default => "kind_is_set", :kind => "example_kind" })
       @optionable.get_option(:kind_is_set).kind.should == "example_kind"
+    end
+    
+    it "should have the display name if set" do
+      @optionable.instance_specified_options = @options_template.merge(:display_name_is_set => {:default => "kind_is_set", :kind => "example_kind", :display_name => "Example Name" })
+      @optionable.get_option(:display_name_is_set).display_name.should == "Example Name"
     end
     
     it "should not have the kind if none was provided" do
@@ -196,7 +205,7 @@ describe "ActsAsOptionable" do
       end
       
       it "should allowing storing the option kind" do
-        @optionable.set_option(@key, "red", "color")
+        @optionable.set_option(@key, "red", :kind => "color")
         @optionable.get_option(@key).kind.should == "color"
       end
       
@@ -289,7 +298,7 @@ describe "ActsAsOptionable" do
     it "should contain both set and default options" do
       @optionable.instance_specified_options = @options_template
       @optionable.set_option("example_option", 99)
-      option_values = @optionable.options_values_struct
+       option_values = @optionable.options_values_struct
       option_values.foo.should == "FOOFOO"
       option_values.fizz.should == "FIZZFIZZ"
       option_values.example_option.should == 99
@@ -298,7 +307,7 @@ describe "ActsAsOptionable" do
   
   describe "getting options and defaults as a hash" do
     before(:each) do
-      @optionable.set_option("example_option", "example_value")
+      @optionable.set_option("example_option", "example_value", :kind => "example", :display_name => "Example Name")
       @options_and_defaults_hash = @optionable.options_and_defaults_hash
     end
     
@@ -318,6 +327,10 @@ describe "ActsAsOptionable" do
     it "should include the kind and default" do
       @options_and_defaults_hash["bar"]["default"].should == "BARBAR"
       @options_and_defaults_hash["bar"]["kind"].should == "example"
+    end
+    
+    it "should include the display name" do
+      @options_and_defaults_hash["example_option"]["display_name"].should == "Example Name"
     end
   end
 end

@@ -37,34 +37,18 @@ class Option < ActiveRecord::Base
   end
 
   def display_name
-    name.humanize.titleize
+    read_attribute(:display_name) || name.humanize.titleize
   end
   
   def to_h
     option_hash = {}
     option_hash["value"] = value
+    option_hash["display_name"] = display_name
     option_hash["default"] = default if default
     option_hash["kind"] = kind if kind
     option_hash.dup
   end
-  
-  # def default_value
-  #   @config['default']
-  # end
-  # 
-  # def evaluated_value
-  #   value && !value.empty? ? value : default_value
-  # end
-  # 
-  # def color?
-  #   @config['type'] == :color
-  # end
-  # 
-  # def config=(h)
-  #   @config = h
-  #   write_attribute(:name, h['name'])
-  # end
-  
+    
   protected
   
   def value_class_ok?(val)

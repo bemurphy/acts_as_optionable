@@ -16,8 +16,8 @@ module ActiveRecord
     
       module IntanceMethods
         # Store an option persistently and override default option
-        def set_option(name, value, kind = nil)
-          option = get_stored_option(name) || options.build(:name => name.to_s, :value => value, :kind => kind)
+        def set_option(name, value, opts = {})
+          option = get_stored_option(name) || options.build(:name => name.to_s, :value => value, :kind => opts[:kind], :display_name => opts[:display_name])
           return if new_option_matches_current?(option, value)
           option.value = value
           ret = option.save!
@@ -67,6 +67,7 @@ module ActiveRecord
             opt_key = name.to_s
             options[opt_key] = option.value
             options["#{opt_key}_kind"] = option.kind
+            options["#{opt_key}_display_name"] = option.display_name
           end        
           OpenStruct.new(options)
         end

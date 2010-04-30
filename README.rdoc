@@ -41,8 +41,14 @@ Use #get_option, #set_option, and #delete_option for interacting with options.
   
 You can also store an optional "kind" attribute as a hint to what you are storing:
 
-  style.set_option("bgcolor", "white", "color")
+  style.set_option("bgcolor", "white", :kind => "color")
   style.get_option("bgcolor").kind => "color"
+  
+You can also store an optional display name for human consumption:
+
+  style.set_option("bgcolor", "white", :display_name => "Background Color")
+  style.get_option("bgcolor").kind => "Background Color"
+
 
 === Specifying default options at the class level
 
