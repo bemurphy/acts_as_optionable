@@ -47,7 +47,7 @@ You can also store an optional "kind" attribute as a hint to what you are storin
 You can also store an optional display name for human consumption:
 
   style.set_option("bgcolor", "white", :display_name => "Background Color")
-  style.get_option("bgcolor").kind => "Background Color"
+  style.get_option("bgcolor").display_name => "Background Color"
 
 
 === Specifying default options at the class level
