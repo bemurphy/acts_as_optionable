@@ -18,7 +18,7 @@ module ActiveRecord
         # Store an option persistently and override default option
         def set_option(name, value, opts = {})
           option = get_stored_option(name) || options.build(:name => name.to_s, :value => value, :kind => opts[:kind], :display_name => opts[:display_name])
-          return if new_option_matches_current?(option, value)
+          return if !opts[:force_set] && new_option_matches_current?(option, value)
           option.value = value
           ret = option.save!
           options(:reload)

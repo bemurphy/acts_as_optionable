@@ -223,6 +223,13 @@ describe "ActsAsOptionable" do
           @optionable.set_option(:foo, "FOOFOO") 
         }.should_not change { Option.count }
       end
+      
+      it "should set the option if it matches the default but you provide a true force_set option" do
+        @optionable.get_option(:foo).value.should == "FOOFOO"
+        lambda {
+          @optionable.set_option(:foo, "FOOFOO", :force_set => true) 
+        }.should change { Option.count }.by(1)
+      end
     end
     
     describe "getting options" do
