@@ -47,7 +47,7 @@ You can also store an optional "kind" attribute as a hint to what you are storin
 Add a "category" if you want to group options:
 
   style.set_option("bgcolor", "white", :category => "colors")
-  style.get_option("bgcolor").colors => "colors"  
+  style.get_option("bgcolor").category => "colors"  
   
 You can also store an optional display name for human consumption:
 
