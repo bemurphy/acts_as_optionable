@@ -6,7 +6,7 @@ module ActiveRecord
           # Setup a default value at the class level.
           def specify_option(option_name, opts = {})
             name = option_name.to_s
-            optionable_specified_options[name] = Option.new_readonly(:name => name, :default => opts[:default], :kind => opts[:kind], :display_name => opts[:display_name])
+            optionable_specified_options[name] = Option.new_readonly(:name => name, :default => opts[:default], :kind => opts[:kind], :display_name => opts[:display_name], :category => opts[:category])
           end
           
           # Returns a hash of options specified at the class level
@@ -40,7 +40,7 @@ module ActiveRecord
             @instance_specified_options = {}
             opts.each do |option_name, attributes|
               attributes.symbolize_keys!
-              @instance_specified_options[option_name.to_s] = Option.new_readonly(:name => option_name.to_s, :default => attributes[:default], :kind => attributes[:kind], :display_name => attributes[:display_name])
+              @instance_specified_options[option_name.to_s] = Option.new_readonly(:name => option_name.to_s, :default => attributes[:default], :kind => attributes[:kind], :display_name => attributes[:display_name], :category => attributes[:category])
             end
           end
         end

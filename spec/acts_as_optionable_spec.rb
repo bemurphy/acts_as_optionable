@@ -9,7 +9,7 @@ class SpecifiedMixin < Mixin
   acts_as_optionable
   
   specify_option :foo, :default => "FOOFOO"
-  specify_option :bar, :default => "BARBAR", :kind => "example", :display_name => "Bar Bar"
+  specify_option :bar, :default => "BARBAR", :kind => "example", :display_name => "Bar Bar", :category => "tabs"
 end
 
 class NoSpecifiedMixin < Mixin
@@ -31,6 +31,7 @@ def setup_db
       t.string :display_name
       t.string :value
       t.string :kind
+      t.string :category
       t.references :optionable, :polymorphic => true
       t.timestamps
     end
@@ -84,6 +85,10 @@ describe "ActsAsOptionable" do
       @optionable.get_option(:bar).display_name.should == "Bar Bar"
     end
     
+    it "should be able to specify a category" do
+      @optionable.get_option(:bar).category.should == "tabs"
+    end
+    
     it "should not mix specifications across unrelated classes" do
       class Foobar < Mixin
         acts_as_optionable
@@ -121,6 +126,11 @@ describe "ActsAsOptionable" do
     it "should have the kind if set" do
       @optionable.instance_specified_options = @options_template.merge(:kind_is_set => {:default => "kind_is_set", :kind => "example_kind" })
       @optionable.get_option(:kind_is_set).kind.should == "example_kind"
+    end
+    
+    it "should have the category if set" do
+      @optionable.instance_specified_options = @options_template.merge(:category_is_set => {:default => "category_is_set", :category => "tabs" })
+      @optionable.get_option(:category_is_set).category.should == "tabs"
     end
     
     it "should have the display name if set" do
@@ -204,9 +214,14 @@ describe "ActsAsOptionable" do
         @optionable.get_option(@key).value.should be_false
       end
       
-      it "should allowing storing the option kind" do
+      it "should allow storing the option kind" do
         @optionable.set_option(@key, "red", :kind => "color")
         @optionable.get_option(@key).kind.should == "color"
+      end
+      
+      it "should allow storing the option category" do
+        @optionable.set_option(@key, "foo", :category => "tabs")
+        @optionable.get_option(@key).category.should == "tabs"
       end
       
       it "should not update the option if it already matches current" do
@@ -314,7 +329,7 @@ describe "ActsAsOptionable" do
   
   describe "getting options and defaults as a hash" do
     before(:each) do
-      @optionable.set_option("example_option", "example_value", :kind => "example", :display_name => "Example Name")
+      @optionable.set_option("example_option", "example_value", :kind => "example", :display_name => "Example Name", :category => "tabs")
       @options_and_defaults_hash = @optionable.options_and_defaults_hash
     end
     
@@ -334,6 +349,10 @@ describe "ActsAsOptionable" do
     it "should include the kind and default" do
       @options_and_defaults_hash["bar"]["default"].should == "BARBAR"
       @options_and_defaults_hash["bar"]["kind"].should == "example"
+    end
+    
+    it "should include the category" do
+      @options_and_defaults_hash["example_option"]["category"].should == "tabs"
     end
     
     it "should include the display name" do

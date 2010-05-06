@@ -46,6 +46,7 @@ class Option < ActiveRecord::Base
     option_hash["display_name"] = display_name
     option_hash["default"] = default if default
     option_hash["kind"] = kind if kind
+    option_hash["category"] = category if category
     option_hash.dup
   end
     

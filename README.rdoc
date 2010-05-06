@@ -44,6 +44,11 @@ You can also store an optional "kind" attribute as a hint to what you are storin
   style.set_option("bgcolor", "white", :kind => "color")
   style.get_option("bgcolor").kind => "color"
   
+Add a "category" if you want to group options:
+
+  style.set_option("bgcolor", "white", :category => "colors")
+  style.get_option("bgcolor").colors => "colors"  
+  
 You can also store an optional display name for human consumption:
 
   style.set_option("bgcolor", "white", :display_name => "Background Color")
@@ -55,13 +60,14 @@ You can also store an optional display name for human consumption:
   class StyleWithDefaults < ActiveRecord::Base
     acts_as_optionable
   
-    specify_option :background_color, :default => "white", :kind => "color"
+    specify_option :background_color, :default => "white", :kind => "color", :category => "background"
     specify_option :color, :default => "black"
   end
   
   style = StyleWithDefaults.create
   style.get_option("background_color").value => "white"
   style.get_option("background_color").kind => "color"
+  style.get_option("background_color").category => "background"
   
 === Specifying instance options at runtime
 

@@ -5,6 +5,7 @@ class CreateOptions < ActiveRecord::Migration
       t.string :display_name
       t.string :value
       t.string :kind
+      t.string :category
       t.references :optionable, :polymorphic => true
       t.timestamps
     end
